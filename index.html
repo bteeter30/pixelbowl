@@ -1,227 +1,311 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gridiron Football</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:#07111f;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  overflow:hidden;
+* {
+  box-sizing: border-box;
 }
 
-button,select{
-  padding:9px;
-  border:0;
-  border-radius:7px;
-  font-weight:bold;
+body {
+  margin: 0;
+  background: #07111f;
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
-button{
-  background:#facc15;
-  color:#111;
-  cursor:pointer;
+button, select {
+  padding: 10px;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 14px;
 }
 
-button:active{
-  transform:scale(.96);
+button {
+  background: #facc15;
+  color: #111;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(.96);
+}
+
+.secondary {
+  background: #29415b;
+  color: white;
+}
+
+#menu {
+  max-width: 850px;
+  height: 100vh;
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+label {
+  display: block;
+  margin: 12px 0;
+}
+
+select {
+  width: 100%;
+  background: #29415b;
+  color: white;
+}
+
+#game {
+  display: none;
+  height: 100vh;
+  position: relative;
+}
+
+#field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #218448;
+  border: 4px solid white;
+}
+
+#field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 9.09%,
+    #ffffff22 9.09% 9.18%
   );
-  width:35px;
-  height:35px;
-  border:3px solid white;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  display:grid;
-  place-items:center;
-  font-size:8px;
-  font-weight:bold;
-  z-index:3;
-  transition:left .12s,top .12s;
-  text-align:center;
+  pointer-events: none;
 }
 
-.home{
-  background:#fff;
+.yard {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #ffffff99;
 }
 
-.away{
-  background:#fff;
+.yard span {
+  position: absolute;
+  top: 12px;
+  left: 4px;
+  font-size: 13px;
+  font-weight: bold;
 }
 
-.offense{
-  box-shadow:0 0 3px #000;
+.endzone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10%;
+  border: 3px solid white;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  writing-mode: vertical-rl;
+  font-size: 14px;
+  z-index: 1;
 }
 
-.defense{
-  box-shadow:0 0 3px #000;
+.player {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+  border: 3px solid white;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 8px;
+  font-weight: bold;
+  z-index: 4;
+  transition: left .12s, top .12s;
 }
 
-.selected{
-  box-shadow:0 0 0 4px #facc15;
+.offense {
+  box-shadow: 0 0 4px #111;
 }
 
-#los{
-  position:absolute;
-  top:0;
-  bottom:0;
-  width:3px;
-  background:#38bdf8;
-  z-index:2;
-  pointer-events:none;
+.defense {
+  box-shadow: 0 0 4px #111;
 }
 
-#losLabel{
-  position:absolute;
-  top:45px;
-  left:5px;
-  color:#fff;
-  font-size:10px;
-  font-weight:bold;
-  white-space:nowrap;
+.selected {
+  box-shadow: 0 0 0 4px #facc15;
 }
 
-#ballMarker{
-  position:absolute;
-  width:12px;
-  height:12px;
-  background:#8b4513;
-  border:2px solid white;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  z-index:5;
-  pointer-events:none;
+#los {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #38bdf8;
+  z-index: 2;
 }
 
-#scoreboard,
+#losLabel {
+  position: absolute;
+  top: 45px;
+  left: 5px;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+#ballMarker {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: #8b4513;
+  border: 2px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+}
+
+#message,
 #controls,
 #receivers,
-#message{
-  position:absolute;
-  z-index:10;
-  background:#101b2cdd;
-  border:1px solid #53677b;
-  border-radius:9px;
-  padding:9px;
+#scoreboard {
+  position: absolute;
+  z-index: 10;
+  background: #101b2cee;
+  border: 1px solid #53677b;
+  border-radius: 9px;
+  padding: 9px;
 }
 
-#scoreboard{
-  bottom:0;
-  left:0;
-  right:0;
+#message {
+  top: 10px;
+  left: 50%;
+  max-width: 90%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
-#scoreline{
-  display:flex;
-  justify-content:space-around;
-  text-align:center;
-  gap:8px;
-  flex-wrap:wrap;
+#controls {
+  left: 10px;
+  bottom: 110px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 365px;
 }
 
-#scoreline b{
-  display:block;
-  color:#facc15;
-  font-size:19px;
+#receivers {
+  right: 10px;
+  bottom: 110px;
 }
 
-#scoreline .warning{
-  color:#ff6464;
+#scoreboard {
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-#controls{
-  left:10px;
-  bottom:110px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  max-width:360px;
+#scoreline {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  text-align: center;
+  font-size: 11px;
 }
 
-#receivers{
-  right:10px;
-  bottom:110px;
+#scoreline b {
+  display: block;
+  color: #facc15;
+  font-size: 17px;
 }
 
-#message{
-  top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  text-align:center;
-  max-width:90%;
+#playClock.warning {
+  color: #ff5555;
 }
 
-#movement{
-  position:absolute;
-  left:10px;
-  top:10px;
-  z-index:10;
-  display:grid;
-  grid-template-columns:repeat(3,40px);
-  gap:4px;
+#movement {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(3, 38px);
+  gap: 4px;
+  transform: translateY(0);
 }
 
-#movement button{
-  padding:8px;
+#movement button {
+  padding: 8px;
 }
 
-#movement button:nth-child(1){
-  grid-column:2;
+#movement button:nth-child(1) {
+  grid-column: 2;
 }
 
-#movement button:nth-child(2){
-  grid-column:1;
-  grid-row:2;
+#movement button:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
 }
 
-#movement button:nth-child(3){
-  grid-column:2;
-  grid-row:2;
+#movement button:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
 }
 
-#movement button:nth-child(4){
-  grid-column:3;
-  grid-row:2;
+#movement button:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
 }
 
-#movement button:nth-child(5){
-  grid-column:2;
-  grid-row:3;
+#movement button:nth-child(5) {
+  grid-column: 2;
+  grid-row: 3;
 }
 
-@media(max-width:600px){
-  .player{
-    width:28px;
-    height:28px;
-    font-size:7px;
+@media (max-width: 600px) {
+  .player {
+    width: 28px;
+    height: 28px;
+    font-size: 7px;
   }
 
-  #controls{
-    max-width:230px;
-    bottom:125px;
+  #controls {
+    max-width: 235px;
+    bottom: 125px;
   }
 
-  #receivers{
-    bottom:125px;
+  #receivers {
+    bottom: 125px;
   }
 
-  #scoreline b{
-    font-size:14px;
+  #scoreline {
+    gap: 4px;
+    font-size: 9px;
   }
 
-  #scoreline{
-    gap:4px;
-    font-size:11px;
+  #scoreline b {
+    font-size: 13px;
   }
 
-  #movement{
-    transform:scale(.85);
-    transform-origin:top left;
+  #movement {
+    transform: scale(.85);
+    transform-origin: top left;
   }
 }
 </style>
@@ -235,50 +319,39 @@ button:active{
 
   <div class="grid">
     <label>
-      Home
+      Home Team
       <select id="home"></select>
     </label>
 
     <label>
-      Away
-      <select id="away"></select>
-    </label>
+      Away Team
+    <button onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
+    <button class="secondary" onclick="backToMenu()">MENU</button>
   </div>
 
-  <label>
-    Weather
-    <select id="weather">
-      <option>Clear</option>
-      <option>Rain</option>
-      <option>Snow</option>
-      <option>Wind</option>
-      <option>Night</option>
-    </select>
-  </label>
-
-  <button onclick="start()">START GAME</button>
-</section>
-
-<section id="game">
-
-  <div id="field">
-    <div id="los">
-      <span id="losLabel">LINE OF SCRIMMAGE</span>
-    </div>
-
-    <div id="ballMarker"></div>
+  <div id="receivers">
+    <b>PASS TO</b><br>
+    <button onclick="selectReceiver('WR1')">WR1</button>
+    <button onclick="selectReceiver('WR2')">WR2</button>
+    <button onclick="selectReceiver('TE')">TE</button>
   </div>
 
-  <div id="message">Press SNAP to begin</div>
+  <div id="scoreboard">
+    <div id="scoreline">
 
-  <div id="movement">
-    <button onclick="move(0,-2)">▲</button>
-    <button onclick="move(-2,0)">◀</button>
-    <button onclick="move(0,2)">▼</button>
-    <button onclick="move(2,0)">▶</button>
-    <button onclick="move(0,-2)">▲</button>
+      <div>
+        <span id="homeLabel">HOME</span>
+        <b id="homeScore">0</b>
+      </div>
+
+      <div>
+        QTR
+        <b id="quarter">1</b>
+      </div>
+
+      <div>
         GAME CLOCK
-        <b id="clock">5:00</b>
+        <b id="gameClock">5:00</b>
       </div>
 
       <div>
@@ -288,527 +361,597 @@ button:active{
 
       <div>
         DOWN
-        <b id="down">1 & 10</b>
+        <b id="downDistance">1 & 10</b>
       </div>
 
       <div>
         BALL ON
         <b id="yardLine">25</b>
-$('away').selectedIndex=1;
+      </div>
 
-let H,A;
-let clock=300;
-let q=1;
-let down=1;
-let togo=10;
-let hs=0;
-let as=0;
+      <div>
+        <span id="awayLabel">AWAY</span>
+        <b id="awayScore">0</b>
+      </div>
 
-let live=false;
-let pos='HOME';
-let selected='WR1';
+      <div>
+        POSSESSION
+        <b id="possession">HOME</b>
+      </div>
 
-let ballYard=25;
-let lineOfScrimmage=25;
-let playClock=40;
-let playTimer=null;
-let gameTimer=null;
+    </div>
+  </div>
 
-let qb;
-let all=[];
+</section>
 
-const O=[
-  ['LT',38,37],
-  ['LG',38,44],
-  ['C',38,50],
-  ['RG',38,56],
-  ['RT',38,63],
+<script>
+const $ = id => document.getElementById(id);
 
-  ['QB',43,50],
-  ['RB',47,50],
-  ['FB',46,42],
+const teams = {
+  DET: ["Detroit Lions","#0076b6","#b0b7bc"],
+  CLE: ["Cleveland Browns","#ff3c00","#311d00"],
+  DAL: ["Dallas Cowboys","#003594","#869397"],
+  BUF: ["Buffalo Bills","#00338d","#c60c30"],
+  GB: ["Green Bay Packers","#203731","#ffb612"],
+  PHI: ["Philadelphia Eagles","#004c54","#a5acaf"],
+  KC: ["Kansas City Chiefs","#e31837","#ffb81c"],
+  SF: ["San Francisco 49ers","#aa0000","#b3995d"],
+  LV: ["Las Vegas Raiders","#000000","#a5acaf"],
+  MIA: ["Miami Dolphins","#008e97","#fc4c02"],
+  NE: ["New England Patriots","#002244","#c60c30"],
+  NYJ: ["New York Jets","#125740","#ffffff"],
+  NYG: ["New York Giants","#0b2265","#a71930"],
+  PIT: ["Pittsburgh Steelers","#101820","#ffb612"],
+  BAL: ["Baltimore Ravens","#241773","#9e7c0c"],
+  CIN: ["Cincinnati Bengals","#fb4f14","#000000"],
+  HOU: ["Houston Texans","#03202f","#a71930"],
+  IND: ["Indianapolis Colts","#002c5f","#a2aaad"],
+  JAX: ["Jacksonville Jaguars","#006778","#d7a22a"],
+  TEN: ["Tennessee Titans","#0c2340","#4b92db"],
+  DEN: ["Denver Broncos","#fb4f14","#002244"],
+  LAC: ["Los Angeles Chargers","#0080c6","#ffc20e"],
+  LAR: ["Los Angeles Rams","#003594","#ffa300"],
+  ARI: ["Arizona Cardinals","#97233f","#000000"],
+  CHI: ["Chicago Bears","#0b162a","#c83803"],
+  MIN: ["Minnesota Vikings","#4f2683","#ffc62f"],
+  NO: ["New Orleans Saints","#d3bc8d","#101820"],
+  CAR: ["Carolina Panthers","#0085ca","#101820"],
+  ATL: ["Atlanta Falcons","#a71930","#000000"],
+  TB: ["Tampa Bay Buccaneers","#d50a0a","#ff7900"],
+  SEA: ["Seattle Seahawks","#002244","#69be28"],
+  WAS: ["Washington Commanders","#5a1414","#ffb612"]
+};
 
-  ['WR1',38,13],
-  ['WR2',38,87],
-  ['TE',38,70]
+Object.entries(teams).forEach(([key, team]) => {
+  ["home","away"].forEach(id => {
+    $(id).add(new Option(team[0], key));
+  });
+});
+
+$("away").selectedIndex = 1;
+
+let homeTeam;
+let awayTeam;
+
+let gameClock = 300;
+let quarter = 1;
+let down = 1;
+let yardsToGo = 10;
+
+let homeScore = 0;
+let awayScore = 0;
+
+let possession = "HOME";
+let ballYard = 25;
+let lineOfScrimmage = 25;
+
+let playClock = 40;
+let live = false;
+let selectedReceiver = "WR1";
+
+let offensePlayers = [];
+let defensePlayers = [];
+let allPlayers = [];
+let quarterback;
+
+let playClockTimer = null;
+
+const offenseFormation = [
+  ["LT",38,37],
+  ["LG",38,44],
+  ["C",38,50],
+  ["RG",38,56],
+  ["RT",38,63],
+
+  ["QB",43,50],
+  ["RB",47,50],
+  ["FB",46,42],
+
+  ["WR1",38,13],
+  ["WR2",38,87],
+  ["TE",38,70]
 ];
 
-const D=[
-  ['DE1',43,35],
-  ['DT1',43,45],
-  ['NT',43,55],
-  ['DT2',43,65],
-  ['DE2',43,72],
+const defenseFormation = [
+  ["DE1",43,35],
+  ["DT1",43,44],
+  ["NT",43,50],
+  ["DT2",43,56],
+  ["DE2",43,65],
 
-  ['LB1',49,42],
-  ['LB2',49,50],
-  ['LB3',49,58],
+  ["LB1",49,40],
+  ["LB2",49,50],
+  ["LB3",49,60],
 
-  ['CB1',48,13],
-  ['CB2',48,87],
-  ['S1',55,35],
-  ['S2',55,65]
+  ["CB1",48,13],
+  ["CB2",48,87],
+
+  ["S1",55,35],
+  ["S2",55,65]
 ];
 
-function msg(t){
-  $('message').textContent=t;
+function showMessage(text) {
+  $("message").textContent = text;
 }
 
-function start(){
-  H=teams[$('home').value];
-  A=teams[$('away').value];
+function start() {
+  homeTeam = teams[$("home").value];
+  awayTeam = teams[$("away").value];
 
-  $('menu').style.display='none';
-  $('game').style.display='block';
+  $("menu").style.display = "none";
+  $("game").style.display = "block";
 
-  clock=300;
-  q=1;
-  down=1;
-  togo=10;
-  hs=0;
-  as=0;
+  gameClock = 300;
+  quarter = 1;
+  down = 1;
+  yardsToGo = 10;
 
-  pos='HOME';
-  ballYard=25;
-  lineOfScrimmage=25;
-  playClock=40;
+  homeScore = 0;
+  awayScore = 0;
 
-  $('field').style.filter=
-    $('weather').value==='Night'
-    ?'brightness(.55)'
-    :'none';
+  possession = "HOME";
+  ballYard = 25;
+  lineOfScrimmage = 25;
+  live = false;
 
-  $('homeLabel').firstChild.textContent=H[0]+' ';
-  $('awayLabel').firstChild.textContent=A[0]+' ';
+  $("field").style.filter =
+    $("weather").value === "Night"
+      ? "brightness(.55)"
+      : "none";
 
-  makeField();
-  makePlayers();
-  update();
+  $("homeLabel").textContent = homeTeam[0];
+  $("awayLabel").textContent = awayTeam[0];
 
-  msg('Ready. Press SNAP.');
+  createField();
+  createPlayers();
   resetPlayClock();
+  updateScoreboard();
+
+  showMessage("Ready. Press SNAP.");
 }
 
-function makeField(){
-  const f=$('field');
+function createField() {
+  const field = $("field");
 
-  f.innerHTML=`
+  field.innerHTML = `
     <div id="los">
       <span id="losLabel">LINE OF SCRIMMAGE</span>
     </div>
     <div id="ballMarker"></div>
   `;
 
-  const ez1=document.createElement('div');
-  ez1.className='endzone';
-  ez1.style.left='0';
-  ez1.style.background=A[1];
-  ez1.textContent=A[0];
-  f.append(ez1);
+  const awayEndzone = document.createElement("div");
+  awayEndzone.className = "endzone";
+  awayEndzone.style.left = "0";
+  awayEndzone.style.background = awayTeam[1];
+  awayEndzone.textContent = awayTeam[0];
+  field.appendChild(awayEndzone);
 
-  const ez2=document.createElement('div');
-  ez2.className='endzone';
-  ez2.style.right='0';
-  ez2.style.background=H[1];
-  ez2.textContent=H[0];
-  f.append(ez2);
+  const homeEndzone = document.createElement("div");
+  homeEndzone.className = "endzone";
+  homeEndzone.style.right = "0";
+  homeEndzone.style.background = homeTeam[1];
+  homeEndzone.textContent = homeTeam[0];
+  field.appendChild(homeEndzone);
 
-  for(let i=10;i<100;i+=10){
-    const d=document.createElement('div');
-    d.className='yard';
-    d.style.left=i+'%';
-    d.innerHTML='<span>'+Math.min(i,100-i)+'</span>';
-    f.append(d);
+  for (let i = 10; i < 100; i += 10) {
+    const yard = document.createElement("div");
+
+    yard.className = "yard";
+    yard.style.left = i + "%";
+    yard.innerHTML = `<span>${Math.min(i,100-i)}</span>`;
+
+    field.appendChild(yard);
   }
 }
 
-function makePlayers(){
-  const f=$('field');
+function createPlayers() {
+  allPlayers = [];
 
-  f.querySelectorAll('.player').forEach(e=>e.remove());
-  all=[];
-
-  O.forEach(p=>all.push(make(p,H,true)));
-  D.forEach(p=>all.push(make(p,A,false)));
-
-  qb=all.find(e=>e.dataset.id==='QB');
-}
-
-function make(p,t,home){
-  const e=document.createElement('div');
-
-  e.className='player '+(home?'home offense':'away defense');
-
-  e.dataset.id=p[0];
-  e.textContent=p[0];
-
-  e.style.left=p[1]+'%';
-  e.style.top=p[2]+'%';
-
-  e.style.background=home?t[1]:t[2];
-  e.style.borderColor=home?t[2]:t[1];
-
-  $('field').append(e);
-
-  return e;
-}
-
-function update(){
-  $('hs').textContent=hs;
-  $('as').textContent=as;
-
-  $('q').textContent=q;
-
-  $('clock').textContent=
-    Math.floor(clock/60)+':'+
-    String(clock%60).padStart(2,'0');
-
-  $('playClock').textContent=playClock;
-
-  $('playClock').classList.toggle(
-    'warning',
-    playClock<=10
+  offensePlayers = offenseFormation.map(player =>
+    createPlayer(player, homeTeam, true)
   );
 
-  $('down').textContent=
-    down+' & '+togo;
+  defensePlayers = defenseFormation.map(player =>
+    createPlayer(player, awayTeam, false)
+  );
 
-  $('yardLine').textContent=ballYard;
+  allPlayers = [...offensePlayers, ...defensePlayers];
 
-  $('pos').textContent=pos;
-
-  updateFieldMarkers();
+  quarterback = allPlayers.find(
+    player => player.dataset.position === "QB"
+  );
 }
 
-function updateFieldMarkers(){
-  const x=ballYard+'%';
+function createPlayer(player, team, isOffense) {
+  const element = document.createElement("div");
 
-  $('los').style.left=x;
-  $('ballMarker').style.left=x;
-  $('ballMarker').style.top='50%';
+  element.className =
+    "player " + (isOffense ? "offense" : "defense");
 
-  $('losLabel').textContent=
-    'LINE OF SCRIMMAGE — '+ballYard;
+  element.dataset.position = player[0];
+
+  element.textContent = player[0];
+
+  element.style.left = player[1] + "%";
+  element.style.top = player[2] + "%";
+
+  element.style.background =
+    isOffense ? team[1] : team[2];
+
+  element.style.borderColor =
+    isOffense ? team[2] : team[1];
+
+  $("field").appendChild(element);
+
+  return element;
 }
 
-function resetPlayClock(){
-  clearInterval(playTimer);
+function updateScoreboard() {
+  $("homeScore").textContent = homeScore;
+  $("awayScore").textContent = awayScore;
 
-  playClock=40;
-  update();
+  $("quarter").textContent = quarter;
 
-  playTimer=setInterval(()=>{
-    if(!live)return;
+  $("gameClock").textContent =
+    Math.floor(gameClock / 60) + ":" +
+    String(gameClock % 60).padStart(2,"0");
+
+  $("playClock").textContent = playClock;
+
+  $("playClock").classList.toggle(
+    "warning",
+    playClock <= 10
+  );
+
+  $("downDistance").textContent =
+    down + " & " + yardsToGo;
+
+  $("yardLine").textContent = ballYard;
+
+  $("possession").textContent = possession;
+
+  updateMarkers();
+}
+
+function updateMarkers() {
+  $("los").style.left = ballYard + "%";
+  $("ballMarker").style.left = ballYard + "%";
+  $("ballMarker").style.top = "50%";
+
+  $("losLabel").textContent =
+    "LINE OF SCRIMMAGE — " + ballYard;
+}
+
+function resetPlayClock() {
+  clearInterval(playClockTimer);
+
+  playClock = 40;
+  updateScoreboard();
+
+  playClockTimer = setInterval(() => {
+    if (!live) return;
 
     playClock--;
 
-    if(playClock<=0){
-      playClock=0;
-      clearInterval(playTimer);
-      live=false;
-      msg('PLAY CLOCK EXPIRED — 5 YARD PENALTY.');
-      togo+=5;
+    if (playClock <= 0) {
+      playClock = 0;
+      live = false;
+
+      clearInterval(playClockTimer);
+
       down++;
+
+      showMessage("PLAY CLOCK EXPIRED — 5 YARD PENALTY.");
+
+      yardsToGo += 5;
     }
 
-    update();
+    updateScoreboard();
   },1000);
 }
 
-function snap(){
-  if(live)return;
+function snap() {
+  if (live) return;
 
-  live=true;
+  live = true;
   resetPlayClock();
 
-  msg('PLAY LIVE — move your QB.');
-  update();
+  showMessage("PLAY LIVE — MOVE YOUR QB.");
+  updateScoreboard();
 }
 
-function move(dx,dy){
-  if(!live)return;
+function move(dx,dy) {
+  if (!live || !quarterback) return;
 
-  const currentX=parseFloat(qb.style.left);
-  const currentY=parseFloat(qb.style.top);
+  let x = parseFloat(quarterback.style.left);
+  let y = parseFloat(quarterback.style.top);
 
-  qb.style.left=
-    Math.max(12,Math.min(88,currentX+dx))+'%';
+  x = Math.max(12,Math.min(88,x + dx));
+  y = Math.max(8,Math.min(92,y + dy));
 
-  qb.style.top=
-    Math.max(8,Math.min(92,currentY+dy))+'%';
+  quarterback.style.left = x + "%";
+  quarterback.style.top = y + "%";
 
-  all
-    .filter(e=>e.classList.contains('defense'))
-    .forEach(e=>{
-      let x=parseFloat(e.style.left);
-      let y=parseFloat(e.style.top);
+  defensePlayers.forEach(player => {
+    let px = parseFloat(player.style.left);
+    let py = parseFloat(player.style.top);
 
-      const qx=parseFloat(qb.style.left);
-      const qy=parseFloat(qb.style.top);
+    if (px > x) px -= .35;
+    if (px < x) px += .15;
 
-      if(x>qx)x-=.35;
-      if(x<qx)x+=.15;
+    if (py < y) py += .12;
+    if (py > y) py -= .12;
 
-      if(y<qy)y+=.12;
-      if(y>qy)y-=.12;
+    player.style.left = px + "%";
+    player.style.top = py + "%";
 
-      e.style.left=x+'%';
-      e.style.top=y+'%';
-
-      if(Math.hypot(x-qx,y-qy)<3){
-        live=false;
-        clearInterval(playTimer);
-        msg('SACK! Play stopped.');
-        update();
-      }
-    });
+    if (Math.hypot(px-x,py-y) < 3) {
+      live = false;
+      clearInterval(playClockTimer);
+      showMessage("SACK! PLAY STOPPED.");
+      updateScoreboard();
+    }
+  });
 }
 
-function finish(kind,gain){
-  clearInterval(playTimer);
+function selectReceiver(receiver) {
+  selectedReceiver = receiver;
 
-  clock=Math.max(0,clock-12);
+  allPlayers.forEach(player => {
+    player.classList.toggle(
+      "selected",
+      player.dataset.position === receiver
+    );
+  });
 
-  togo-=gain;
+  showMessage("Receiver selected: " + receiver);
+}
 
-  ballYard=Math.max(
-    1,
-    Math.min(99,ballYard+gain)
-  );
+function runPlay() {
+  if (!live) snap();
 
-  lineOfScrimmage=ballYard;
+  const weather = $("weather").value;
 
-  if(togo<=0){
-    down=1;
-    togo=10;
-    msg(kind+' — FIRST DOWN!');
-  }else{
+  let gain = Math.floor(Math.random() * 8);
+
+  if (weather === "Rain") gain -= 2;
+  if (weather === "Snow") gain -= 3;
+
+  gain = Math.max(0,gain);
+
+  finishPlay("RUN",gain);
+}
+
+function passPlay() {
+  if (!live) snap();
+
+  const weather = $("weather").value;
+
+  let gain = Math.floor(Math.random() * 16);
+
+  if (weather === "Wind") gain -= 3;
+  if (weather === "Rain") gain -= 2;
+
+  gain = Math.max(0,gain);
+
+  finishPlay("PASS TO " + selectedReceiver,gain);
+}
+
+function finishPlay(playType,gain) {
+  clearInterval(playClockTimer);
+
+  gameClock = Math.max(0,gameClock - 12);
+
+  yardsToGo -= gain;
+  ballYard = Math.max(1,Math.min(99,ballYard + gain));
+
+  lineOfScrimmage = ballYard;
+  live = false;
+
+  if (yardsToGo <= 0) {
+    down = 1;
+    yardsToGo = 10;
+
+    showMessage(playType + " — FIRST DOWN!");
+  } else {
     down++;
 
-    msg(
-      kind+
-      ' — Gain of '+
-      gain+
-      ' yards. Ball on '+
-      ballYard+
-      ' yard line.'
+    showMessage(
+      playType +
+      " — GAIN OF " +
+      gain +
+      " YARDS. BALL ON " +
+      ballYard
     );
 
-    if(down>4){
-      turnoverDowns();
+    if (down > 4) {
+      turnoverOnDowns();
       return;
     }
   }
 
-  if(clock<=0){
-    endQuarter();
+  if (gameClock <= 0) {
+    nextQuarter();
     return;
   }
 
-  live=false;
-  resetPlayClock();
-  update();
-}
-
-function runPlay(){
-  if(!live)snap();
-
-  const weather=$('weather').value;
-
-  let gain=Math.floor(Math.random()*8);
-
-  if(weather==='Rain')gain-=2;
-  if(weather==='Snow')gain-=3;
-
-  gain=Math.max(0,gain);
-
-  finish('RUN',gain);
-}
-
-function receiver(r){
-  selected=r;
-
-  all.forEach(e=>{
-    e.classList.toggle(
-      'selected',
-      e.dataset.id===r
-    );
-  });
-
-  msg('Receiver selected: '+r);
-}
-
-function passPlay(){
-  if(!live)snap();
-
-  const weather=$('weather').value;
-
-  let gain=Math.floor(Math.random()*16);
-
-  if(weather==='Wind')gain-=3;
-  if(weather==='Rain')gain-=2;
-
-  gain=Math.max(0,gain);
-
-  finish('PASS TO '+selected,gain);
-}
-
-function turnoverDowns(){
-  clearInterval(playTimer);
-
-  down=1;
-  togo=10;
-
-  pos=pos==='HOME'?'AWAY':'HOME';
-
-  ballYard=25;
-  lineOfScrimmage=25;
-
-  live=false;
-
-  msg('TURNOVER ON DOWNS — '+pos+' BALL.');
-
   resetFormation();
   resetPlayClock();
-  update();
+  updateScoreboard();
 }
 
-function punt(){
-  if(!live)snap();
+function punt() {
+  if (!live) snap();
 
-  clearInterval(playTimer);
+  clearInterval(playClockTimer);
 
-  clock=Math.max(0,clock-15);
+  gameClock = Math.max(0,gameClock - 15);
+  live = false;
 
-  const result=Math.random();
+  const result = Math.random();
 
-  live=false;
-
-  if(result<.1){
-    const team=pos==='HOME'?H[0]:A[0];
-
-    if(pos==='HOME')as+=7;
-    else hs+=7;
-
-    msg('PUNT RETURN TOUCHDOWN — '+team+'!');
-  }else if(result<.25){
-    const team=pos==='HOME'?H[0]:A[0];
-
-    if(pos==='HOME')as+=3;
-    else hs+=3;
-
-    msg('PUNT — '+team+' FIELD GOAL.');
-  }else{
-    pos=pos==='HOME'?'AWAY':'HOME';
-
-    ballYard=25;
-    lineOfScrimmage=25;
-
-    down=1;
-    togo=10;
-
-    resetFormation();
-    resetPlayClock();
-    update();
-
-    msg('PUNT — POSSESSION CHANGES TO '+pos+'.');
-    return;
-  }
-
-  pos=pos==='HOME'?'AWAY':'HOME';
-
-  ballYard=25;
-  lineOfScrimmage=25;
-
-  down=1;
-  togo=10;
-
-  resetFormation();
-  resetPlayClock();
-  update();
-}
-
-function resetFormation(){
-  all.forEach(e=>{
-    const id=e.dataset.id;
-
-    const offensive=O.find(p=>p[0]===id);
-    const defensive=D.find(p=>p[0]===id);
-
-    const p=offensive||defensive;
-
-    if(p){
-      e.style.left=p[1]+'%';
-      e.style.top=p[2]+'%';
+  if (result < .1) {
+    if (possession === "HOME") {
+      awayScore += 7;
+    } else {
+      homeScore += 7;
     }
-  });
 
-  qb=all.find(e=>e.dataset.id==='QB');
+    showMessage("PUNT RETURN TOUCHDOWN!");
+  } else if (result < .25) {
+    if (possession === "HOME") {
+      awayScore += 3;
+    } else {
+      homeScore += 3;
+    }
+
+    showMessage("PUNT — FIELD GOAL!");
+  } else {
+    changePossession();
+    return;
+  }
+
+  changePossession();
 }
 
-function endQuarter(){
-  q++;
+function turnoverOnDowns() {
+  showMessage("TURNOVER ON DOWNS!");
 
-  if(q>4){
-    q=4;
-    live=false;
-    msg('GAME OVER!');
-    clearInterval(playTimer);
-  }else{
-    clock=300;
-    down=1;
-    togo=10;
-    ballYard=25;
-    lineOfScrimmage=25;
-    live=false;
+  changePossession();
+}
+
+function changePossession() {
+  possession =
+    possession === "HOME"
+      ? "AWAY"
+      : "HOME";
+
+  ballYard = 25;
+  lineOfScrimmage = 25;
+
+  down = 1;
+  yardsToGo = 10;
+  live = false;
+
+  resetFormation();
+  resetPlayClock();
+  updateScoreboard();
+
+  showMessage("POSSESSION CHANGES TO " + possession);
+}
+
+function resetFormation() {
+  allPlayers.forEach(player => {
+    const position = player.dataset.position;
+
+    const offense = offenseFormation.find(
+      item => item[0] === position
+    );
+
+    const defense = defenseFormation.find(
+      item => item[0] === position
+    );
+
+    const original = offense || defense;
+
+    if (original) {
+      player.style.left = original[1] + "%";
+      player.style.top = original[2] + "%";
+    }
+
+    player.classList.remove("selected");
+  });
+
+  quarterback = allPlayers.find(
+    player => player.dataset.position === "QB"
+  );
+}
+
+function nextQuarter() {
+  quarter++;
+
+  if (quarter > 4) {
+    quarter = 4;
+    live = false;
+
+    clearInterval(playClockTimer);
+    showMessage("GAME OVER!");
+  } else {
+    gameClock = 300;
+    down = 1;
+    yardsToGo = 10;
+    ballYard = 25;
+    lineOfScrimmage = 25;
+    live = false;
 
     resetFormation();
     resetPlayClock();
 
-    msg('QUARTER '+q+' — READY TO PLAY.');
+    showMessage("QUARTER " + quarter + " — READY!");
   }
 
-  update();
+  updateScoreboard();
 }
 
-function toggleFS(){
-  if(document.fullscreenElement){
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
     document.exitFullscreen();
-  }else{
+  } else {
     document.documentElement.requestFullscreen?.();
   }
 }
 
-function menu(){
-  clearInterval(playTimer);
+function backToMenu() {
+  clearInterval(playClockTimer);
 
-  $('game').style.display='none';
-  $('menu').style.display='block';
+  live = false;
 
-  live=false;
+  $("game").style.display = "none";
+  $("menu").style.display = "block";
 }
 
-document.addEventListener('keydown',e=>{
-  const k=e.key.toLowerCase();
+document.addEventListener("keydown", event => {
+  const key = event.key.toLowerCase();
 
-  if(e.code==='Space'){
-    e.preventDefault();
+  if (event.code === "Space") {
+    event.preventDefault();
     snap();
   }
 
-  if(k==='w'||e.key==='ArrowUp'){
+  if (key === "w" || event.key === "ArrowUp") {
     move(0,-2);
   }
 
-  if(k==='s'||e.key==='ArrowDown'){
+  if (key === "s" || event.key === "ArrowDown") {
     move(0,2);
   }
 
-  if(k==='a'||e.key==='ArrowLeft'){
+  if (key === "a" || event.key === "ArrowLeft") {
     move(-2,0);
   }
 
-  if(k==='d'||e.key==='ArrowRight'){
+  if (key === "d" || event.key === "ArrowRight") {
     move(2,0);
   }
 });
@@ -816,4 +959,3 @@ document.addEventListener('keydown',e=>{
 
 </body>
 </html>
-
