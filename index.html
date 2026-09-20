@@ -1,135 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gridiron Football</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gridiron Football Revised</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- background:#07111f;
- color:white;
- font-family:Arial,sans-serif;
- overflow:hidden;
-}
-button,select{
- padding:10px 14px;
- border:0;
- border-radius:8px;
- font-weight:bold;
- cursor:pointer;
-}
-button{background:#facc15;color:#111}
-button.secondary{background:#263c55;color:white}
-#menu{padding:20px;max-width:800px;margin:auto}
-#menu h1{color:#facc15}
-.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial;overflow:hidden}
+button,select{padding:9px;border:0;border-radius:7px;font-weight:bold}
+button{background:#facc15;color:#111;cursor:pointer}
+.secondary{background:#29415b;color:#fff}
+#menu{max-width:850px;margin:auto;padding:18px}
 label{display:block;margin:12px 0}
-select{width:100%;background:#263c55;color:white}
+select{width:100%;background:#29415b;color:white}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #game{display:none;height:100vh;position:relative}
-#field{
- position:absolute;
- inset:0;
- overflow:hidden;
- background:
- repeating-linear-gradient(
-  90deg,#207844 0,#207844 9.09%,
-  #26894e 9.09%,#26894e 18.18%
- );
- border:4px solid white;
-}
-#field:before{
- content:"";
- position:absolute;
- inset:0;
- background:repeating-linear-gradient(
-  90deg,transparent 0%,transparent 9.6%,
-  #ffffffaa 9.6%,#ffffffaa 10%
- );
-}
-.endzone{
- position:absolute;
- top:0;
- bottom:0;
- width:12%;
- border:3px solid white;
-}
-.endzone.left{left:0;background:#194b99}
-.endzone.right{right:0;background:#b45309}
-.player{
- position:absolute;
- width:34px;
- height:34px;
- border-radius:50%;
- border:3px solid white;
- transform:translate(-50%,-50%);
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:10px;
- font-weight:bold;
- z-index:3;
- transition:left .12s,top .12s;
-}
-.home{background:#2563eb}
-.away{background:#dc2626}
-.ball{background:#8b4513;border-color:#f5d0a0}
+#field{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#207844 0 9.09%,#26894e 9.09% 18.18%);overflow:hidden;border:4px solid white}
+#field:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9.6%,#fff9 9.6% 10%)}
+.yard{position:absolute;top:0;bottom:0;width:1px;background:#fff8}
+.yard span{position:absolute;top:12px;left:4px;font-size:13px;color:#fff;font-weight:bold}
+.endzone{position:absolute;top:0;bottom:0;width:12%;border:3px solid white;display:grid;place-items:center;font-weight:bold;writing-mode:vertical-rl;font-size:18px}
+.player{position:absolute;width:34px;height:34px;border:3px solid white;border-radius:50%;transform:translate(-50%,-50%);display:grid;place-items:center;font-size:9px;font-weight:bold;z-index:3;transition:left .1s,top .1s}
+.home{background:#fff}
+.away{background:#fff}
 .selected{box-shadow:0 0 0 4px #facc15}
-#scoreboard{
- position:absolute;
- bottom:0;
- left:0;
- right:0;
- background:#101b2c;
- border-top:2px solid #facc15;
- padding:10px;
- z-index:10;
-}
-.scoreRow{
- display:flex;
- justify-content:space-around;
- align-items:center;
- text-align:center;
- gap:8px;
-}
-.scoreRow b{display:block;font-size:20px;color:#facc15}
-#controls{
- position:absolute;
- bottom:90px;
- left:15px;
- z-index:10;
- display:flex;
- flex-wrap:wrap;
- gap:8px;
- max-width:340px;
-}
-#message{
- position:absolute;
- top:15px;
- left:50%;
- transform:translateX(-50%);
- background:#071522dd;
- padding:12px;
- border-radius:8px;
- z-index:10;
- text-align:center;
-}
-#receiverPanel{
- position:absolute;
- right:15px;
- bottom:90px;
- z-index:10;
- background:#071522dd;
- padding:12px;
- border-radius:10px;
-}
-#receiverPanel button{margin:3px}
+#scoreboard,#controls,#receivers,#message{position:absolute;z-index:10;background:#101b2cdd;border:1px solid #53677b;border-radius:9px;padding:9px}
+#scoreboard{bottom:0;left:0;right:0}
+#scoreline{display:flex;justify-content:space-around;text-align:center;gap:8px;flex-wrap:wrap}
+#scoreline b{display:block;color:#facc15;font-size:19px}
+#controls{left:10px;bottom:88px;display:flex;flex-wrap:wrap;gap:6px;max-width:360px}
+#receivers{right:10px;bottom:88px}
+#message{top:10px;left:50%;transform:translateX(-50%);text-align:center}
 @media(max-width:600px){
- .player{width:28px;height:28px;font-size:8px}
- .scoreRow b{font-size:15px}
- #controls{bottom:105px;max-width:220px}
- #receiverPanel{right:8px;bottom:105px}
+.player{width:28px;height:28px;font-size:8px}
+#controls{max-width:230px;bottom:110px}
+#receivers{bottom:110px}
+#scoreline b{font-size:14px}
 }
 </style>
 </head>
@@ -137,57 +43,23 @@ select{width:100%;background:#263c55;color:white}
 
 <section id="menu">
 <h1>🏈 GRIDIRON FOOTBALL</h1>
-<p>Choose your teams and start a prototype game.</p>
-
-<label>Home Team
-<select id="homeTeam">
-<option value="DET">Detroit Lions</option>
-<option value="CLE">Cleveland Browns</option>
-<option value="DAL">Dallas Cowboys</option>
-<option value="BUF">Buffalo Bills</option>
-<option value="GB">Green Bay Packers</option>
-<option value="PHI">Philadelphia Eagles</option>
-<option value="KC">Kansas City Chiefs</option>
-<option value="SF">San Francisco 49ers</option>
-<option value="LV">Las Vegas Raiders</option>
-<option value="MIA">Miami Dolphins</option>
-</select>
-</label>
-
-<label>Away Team
-<select id="awayTeam">
-<option value="CLE">Cleveland Browns</option>
-<option value="DET">Detroit Lions</option>
-<option value="DAL">Dallas Cowboys</option>
-<option value="BUF">Buffalo Bills</option>
-<option value="GB">Green Bay Packers</option>
-<option value="PHI">Philadelphia Eagles</option>
-<option value="KC">Kansas City Chiefs</option>
-<option value="SF">San Francisco 49ers</option>
-<option value="LV">Las Vegas Raiders</option>
-<option value="MIA">Miami Dolphins</option>
-</select>
-</label>
-
-<label>Weather
-<select id="weather">
+<p>Choose teams and start.</p>
+<div class="grid">
+<label>Home<select id="home"></select></label>
+<label>Away<select id="away"></select></label>
+</div>
+<label>Weather<select id="weather">
 <option>Clear</option>
 <option>Rain</option>
 <option>Snow</option>
 <option>Wind</option>
 <option>Night</option>
-</select>
-</label>
-
-<button onclick="startGame()">START GAME</button>
+</select></label>
+<button onclick="start()">START GAME</button>
 </section>
 
 <section id="game">
-<div id="field">
-<div class="endzone left"></div>
-<div class="endzone right"></div>
-</div>
-
+<div id="field"></div>
 <div id="message">Press SNAP to begin</div>
 
 <div id="controls">
@@ -195,24 +67,25 @@ select{width:100%;background:#263c55;color:white}
 <button onclick="runPlay()">RUN</button>
 <button onclick="passPlay()">PASS</button>
 <button onclick="punt()">PUNT</button>
-<button onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
-<button class="secondary" onclick="backMenu()">MENU</button>
+<button onclick="toggleFS()">⛶ FULLSCREEN</button>
+<button class="secondary" onclick="menu()">MENU</button>
 </div>
 
-<div id="receiverPanel">
+<div id="receivers">
 <b>PASS TO</b><br>
-<button onclick="selectReceiver(1)">WR1</button>
-<button onclick="selectReceiver(2)">WR2</button>
-<button onclick="selectReceiver(3)">TE</button>
+<button onclick="receiver('WR1')">WR1</button>
+<button onclick="receiver('WR2')">WR2</button>
+<button onclick="receiver('TE')">TE</button>
 </div>
 
 <div id="scoreboard">
-<div class="scoreRow">
-<div id="homeLabel">HOME<b id="homeScore">0</b></div>
-<div>QTR <b id="quarter">1</b></div>
-<div>CLOCK <b id="clock">5:00</b></div>
-<div>DOWN <b id="down">1 & 10</b></div>
-<div id="awayLabel">AWAY<b id="awayScore">0</b></div>
+<div id="scoreline">
+<div id="homeLabel">HOME<b id="hs">0</b></div>
+<div>QTR<b id="q">1</b></div>
+<div>CLOCK<b id="clock">5:00</b></div>
+<div>DOWN<b id="down">1 & 10</b></div>
+<div id="awayLabel">AWAY<b id="as">0</b></div>
+<div>POS<b id="pos">HOME</b></div>
 </div>
 </div>
 </section>
@@ -221,256 +94,253 @@ select{width:100%;background:#263c55;color:white}
 const $=id=>document.getElementById(id);
 
 const teams={
-DET:{name:"Detroit Lions",primary:"#0076b6",secondary:"#b0b7bc"},
-CLE:{name:"Cleveland Browns",primary:"#ff3c00",secondary:"#311d00"},
-DAL:{name:"Dallas Cowboys",primary:"#003594",secondary:"#869397"},
-BUF:{name:"Buffalo Bills",primary:"#00338d",secondary:"#c60c30"},
-GB:{name:"Green Bay Packers",primary:"#203731",secondary:"#ffb612"},
-PHI:{name:"Philadelphia Eagles",primary:"#004c54",secondary:"#a5acaf"},
-KC:{name:"Kansas City Chiefs",primary:"#e31837",secondary:"#ffb81c"},
-SF:{name:"San Francisco 49ers",primary:"#aa0000",secondary:"#b3995d"},
-LV:{name:"Las Vegas Raiders",primary:"#000000",secondary:"#a5acaf"},
-MIA:{name:"Miami Dolphins",primary:"#008e97",secondary:"#fc4c02"}
+DET:['Detroit Lions','#0076b6','#b0b7bc'],
+CLE:['Cleveland Browns','#ff3c00','#311d00'],
+DAL:['Dallas Cowboys','#003594','#869397'],
+BUF:['Buffalo Bills','#00338d','#c60c30'],
+GB:['Green Bay Packers','#203731','#ffb612'],
+PHI:['Philadelphia Eagles','#004c54','#a5acaf'],
+KC:['Kansas City Chiefs','#e31837','#ffb81c'],
+SF:['San Francisco 49ers','#aa0000','#b3995d'],
+LV:['Las Vegas Raiders','#000','#a5acaf'],
+MIA:['Miami Dolphins','#008e97','#fc4c02'],
+NE:['New England Patriots','#002244','#c60c30'],
+NYJ:['New York Jets','#125740','#fff'],
+NYG:['New York Giants','#0b2265','#a71930'],
+PIT:['Pittsburgh Steelers','#101820','#ffb612'],
+BAL:['Baltimore Ravens','#241773','#9e7c0c'],
+CIN:['Cincinnati Bengals','#fb4f14','#000'],
+HOU:['Houston Texans','#03202f','#a71930'],
+IND:['Indianapolis Colts','#002c5f','#a2aaad'],
+JAX:['Jacksonville Jaguars','#006778','#d7a22a'],
+TEN:['Tennessee Titans','#0c2340','#4b92db'],
+DEN:['Denver Broncos','#fb4f14','#002244'],
+LAC:['Los Angeles Chargers','#0080c6','#ffc20e'],
+LAR:['Los Angeles Rams','#003594','#ffa300'],
+ARI:['Arizona Cardinals','#97233f','#000'],
+CHI:['Chicago Bears','#0b162a','#c83803'],
+MIN:['Minnesota Vikings','#4f2683','#ffc62f'],
+NO:['New Orleans Saints','#d3bc8d','#101820'],
+CAR:['Carolina Panthers','#0085ca','#101820'],
+ATL:['Atlanta Falcons','#a71930','#000'],
+TB:['Tampa Bay Buccaneers','#d50a0a','#ff7900'],
+SEA:['Seattle Seahawks','#002244','#69be28'],
+WAS:['Washington Commanders','#5a1414','#ffb612']
 };
 
-let homeTeam,awayTeam;
-let clock=300,quarter=1,down=1,toGo=10;
-let homeScore=0,awayScore=0;
-let live=false,selectedReceiver=1;
-let players=[],qb;
-let possession="HOME";
+Object.entries(teams).forEach(([k,v])=>{
+for(const id of ['home','away'])
+$(id).add(new Option(v[0],k))
+});
 
-const offense=[
- {id:"QB",x:43,y:50,role:"QB"},
- {id:"C",x:39,y:50,role:"C"},
- {id:"LG",x:39,y:43,role:"OL"},
- {id:"RG",x:39,y:57,role:"OL"},
- {id:"LT",x:39,y:36,role:"OL"},
- {id:"RT",x:39,y:64,role:"OL"},
- {id:"WR1",x:30,y:20,role:"WR"},
- {id:"WR2",x:30,y:80,role:"WR"},
- {id:"TE",x:34,y:70,role:"TE"},
- {id:"RB",x:35,y:50,role:"RB"},
- {id:"FB",x:36,y:44,role:"FB"}
+let H,A,clock=300,q=1,down=1,togo=10,hs=0,as=0,live=false,pos='HOME',selected='WR1',qb,all=[];
+
+const O=[
+['LT',39,35],['LG',39,43],['C',39,50],
+['RG',39,57],['RT',39,65],['QB',43,50],
+['RB',46,57],['FB',45,43],
+['WR1',30,18],['WR2',30,82],['TE',35,70]
 ];
 
-const defense=[
- {id:"DE1",x:53,y:36},
- {id:"DT1",x:53,y:45},
- {id:"DT2",x:53,y:55},
- {id:"DE2",x:53,y:64},
- {id:"LB1",x:59,y:40},
- {id:"LB2",x:59,y:50},
- {id:"LB3",x:59,y:60},
- {id:"CB1",x:67,y:20},
- {id:"CB2",x:67,y:80},
- {id:"S1",x:76,y:35},
- {id:"S2",x:76,y:65}
+const D=[
+['DE1',53,36],['DT1',53,45],['DT2',53,55],
+['DE2',53,64],['LB1',59,40],['LB2',59,50],
+['LB3',59,60],['CB1',67,18],['CB2',67,82],
+['S1',76,35],['S2',76,65]
 ];
 
-function startGame(){
- homeTeam=teams[$("homeTeam").value];
- awayTeam=teams[$("awayTeam").value];
-
- $("menu").style.display="none";
- $("game").style.display="block";
-
- $("homeLabel").firstChild.textContent=homeTeam.name+" ";
- $("awayLabel").firstChild.textContent=awayTeam.name+" ";
-
- clock=300;quarter=1;down=1;toGo=10;
- homeScore=0;awayScore=0;live=false;
-
- $("field").style.filter=$("weather").value==="Night"?"brightness(.55)":"none";
-
- createPlayers();
- updateScoreboard();
- message("Ready for kickoff.");
+function msg(t){
+$('message').textContent=t
 }
 
-function createPlayers(){
- $("field").querySelectorAll(".player").forEach(p=>p.remove());
- players=[];
+function start(){
+H=teams[$('home').value];
+A=teams[$('away').value];
 
- offense.forEach(p=>{
-  let e=makePlayer(p,homeTeam,true);
-  players.push(e);
-  if(p.id==="QB")qb=e;
- });
+$('menu').style.display='none';
+$('game').style.display='block';
 
- defense.forEach(p=>{
-  let e=makePlayer(p,awayTeam,false);
-  players.push(e);
- });
+clock=300;q=1;down=1;togo=10;hs=as=0;pos='HOME';
+
+$('field').style.filter=$('weather').value==='Night'?'brightness(.55)':'none';
+
+$('homeLabel').firstChild.textContent=H[0]+' ';
+$('awayLabel').firstChild.textContent=A[0]+' ';
+
+makeField();
+makePlayers();
+update();
+msg('Ready. Press SNAP.')
 }
 
-function makePlayer(p,team,isHome){
- let e=document.createElement("div");
- e.className="player "+(isHome?"home":"away");
- e.textContent=p.id;
- e.style.left=p.x+"%";
- e.style.top=p.y+"%";
- e.style.background=isHome?team.primary:team.secondary;
- e.style.borderColor=isHome?team.secondary:team.primary;
- e.dataset.id=p.id;
- $("field").appendChild(e);
- return e;
+function makeField(){
+let f=$('field');
+
+f.innerHTML='<div class="endzone" style="left:0;background:'+A[1]+'">'+A[0]+'</div><div class="endzone" style="right:0;background:'+H[1]+'">'+H[0]+'</div>';
+
+for(let i=10;i<100;i+=10){
+let d=document.createElement('div');
+d.className='yard';
+d.style.left=i+'%';
+d.innerHTML='<span>'+i+'</span>';
+f.append(d)
+}
 }
 
-function message(text){
- $("message").textContent=text;
+function makePlayers(){
+let f=$('field');
+f.querySelectorAll('.player').forEach(e=>e.remove());
+all=[];
+
+O.forEach(p=>all.push(make(p,H,true)));
+D.forEach(p=>all.push(make(p,A,false)));
+
+qb=all.find(e=>e.dataset.id==='QB')
 }
 
-function updateScoreboard(){
- $("homeScore").textContent=homeScore;
- $("awayScore").textContent=awayScore;
- $("quarter").textContent=quarter;
- $("clock").textContent=Math.floor(clock/60)+":"+String(clock%60).padStart(2,"0");
- $("down").textContent=down+" & "+toGo;
+function make(p,t,home){
+let e=document.createElement('div');
+
+e.className='player '+(home?'home':'away');
+e.dataset.id=p[0];
+e.textContent=p[0];
+e.style.left=p[1]+'%';
+e.style.top=p[2]+'%';
+e.style.background=home?t[1]:t[2];
+e.style.borderColor=home?t[2]:t[1];
+
+$('field').append(e);
+return e
+}
+
+function update(){
+$('hs').textContent=hs;
+$('as').textContent=as;
+$('q').textContent=q;
+$('clock').textContent=Math.floor(clock/60)+':'+String(clock%60).padStart(2,'0');
+$('down').textContent=down+' & '+togo;
+$('pos').textContent=pos
 }
 
 function snap(){
- if(live)return;
- live=true;
- clock=Math.max(0,clock-8);
- message("PLAY LIVE — move the quarterback.");
- updateScoreboard();
+if(live)return;
+
+live=true;
+clock=Math.max(0,clock-8);
+msg('PLAY LIVE — move QB.');
+update()
 }
 
-function moveQB(dx,dy){
- if(!live||!qb)return;
+function move(dx,dy){
+if(!live)return;
 
- let x=parseFloat(qb.style.left)+dx;
- let y=parseFloat(qb.style.top)+dy;
+qb.style.left=Math.max(5,Math.min(95,parseFloat(qb.style.left)+dx))+'%';
+qb.style.top=Math.max(8,Math.min(92,parseFloat(qb.style.top)+dy))+'%';
 
- qb.style.left=Math.max(5,Math.min(95,x))+"%";
- qb.style.top=Math.max(8,Math.min(92,y))+"%";
+all.filter(e=>e.classList.contains('away')).forEach(e=>{
+let x=parseFloat(e.style.left);
+let y=parseFloat(e.style.top);
+let qx=parseFloat(qb.style.left);
+let qy=parseFloat(qb.style.top);
 
- moveDefense();
+if(x>qx)x-=.6;
+if(y<qy)y+=.2;
+if(y>qy)y-=.2;
+
+e.style.left=x+'%';
+e.style.top=y+'%';
+
+if(Math.hypot(x-qx,y-qy)<3){
+live=false;
+down++;
+msg('SACK! Play stopped.');
+update()
+}
+})
 }
 
-function moveDefense(){
- players.filter(p=>p.classList.contains("away")).forEach(p=>{
-  let x=parseFloat(p.style.left);
-  let y=parseFloat(p.style.top);
-  let qx=parseFloat(qb.style.left);
-  let qy=parseFloat(qb.style.top);
+function finish(kind,gain){
+clock=Math.max(0,clock-12);
+togo-=gain;
 
-  if(x>qx){
-   x-=.35;
-   if(y<qy)y+=.12;
-   if(y>qy)y-=.12;
-  }
+if(togo<=0){
+down=1;
+togo=10;
+msg(kind+' — FIRST DOWN!')
+}else{
+down++;
+msg(kind+' gained '+gain+' yards.');
 
-  p.style.left=x+"%";
-  p.style.top=y+"%";
- });
+if(down>4){
+down=1;
+togo=10;
+pos=pos==='HOME'?'AWAY':'HOME';
+msg('TURNOVER ON DOWNS — '+pos+' ball.')
+}
+}
+
+if(clock===0){
+q++;
+clock=300
+}
+
+live=false;
+update()
 }
 
 function runPlay(){
- if(!live)snap();
+if(!live)snap();
 
- let gain=Math.floor(Math.random()*8)+1;
+finish('Run',Math.max(0,Math.floor(Math.random()*8)-($('weather').value==='Rain'?2:0)))
+}
 
- if($("weather").value==="Rain")gain-=2;
- if($("weather").value==="Snow")gain-=3;
-
- gain=Math.max(0,gain);
- finishPlay("Run",gain);
+function receiver(r){
+selected=r;
+msg('Receiver selected: '+r)
 }
 
 function passPlay(){
- if(!live)snap();
+if(!live)snap();
 
- let gain=Math.floor(Math.random()*16)+2;
+let gain=Math.max(0,Math.floor(Math.random()*16)-($('weather').value==='Wind'?3:0));
 
- if($("weather").value==="Wind")gain-=3;
- if($("weather").value==="Rain")gain-=2;
-
- gain=Math.max(0,gain);
-
- finishPlay("Pass to "+selectedReceiver,gain);
-}
-
-function selectReceiver(num){
- selectedReceiver=num;
- message("Receiver selected: "+num);
-}
-
-function finishPlay(type,gain){
- clock=Math.max(0,clock-12);
- toGo-=gain;
-
- if(toGo<=0){
-  down=1;
-  toGo=10;
-  message(type+" — FIRST DOWN!");
- }else{
-  down++;
-  message(type+" gained "+gain+" yards.");
-
-  if(down>4){
-   down=1;
-   toGo=10;
-   message("Turnover on downs.");
-  }
- }
-
- if(Math.random()<.04){
-  homeScore+=7;
-  message("TOUCHDOWN!");
- }
-
- if(clock===0){
-  quarter++;
-  clock=300;
- }
-
- live=false;
- updateScoreboard();
+finish('Pass to '+selected,gain)
 }
 
 function punt(){
- if(!live)snap();
+if(!live)snap();
 
- clock=Math.max(0,clock-15);
- down=1;
- toGo=10;
- live=false;
- message("Punt away!");
- updateScoreboard();
+clock=Math.max(0,clock-15);
+pos=pos==='HOME'?'AWAY':'HOME';
+down=1;
+togo=10;
+live=false;
+
+msg('PUNT — '+pos+' possession.');
+update()
 }
 
-function toggleFullscreen(){
- if(!document.fullscreenElement){
-  document.documentElement.requestFullscreen?.();
- }else{
-  document.exitFullscreen?.();
- }
+function toggleFS(){
+document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.()
 }
 
-function backMenu(){
- $("game").style.display="none";
- $("menu").style.display="block";
+function menu(){
+$('game').style.display='none';
+$('menu').style.display='block'
 }
 
-document.addEventListener("keydown",e=>{
- if(e.code==="Space"){
-  e.preventDefault();
-  snap();
- }
+document.addEventListener('keydown',e=>{
+let k=e.key.toLowerCase();
 
- if(e.key.toLowerCase()==="w"||e.key==="ArrowUp")
-  moveQB(0,-2);
+if(e.code==='Space'){
+e.preventDefault();
+snap()
+}
 
- if(e.key.toLowerCase()==="s"||e.key==="ArrowDown")
-  moveQB(0,2);
-
- if(e.key.toLowerCase()==="a"||e.key==="ArrowLeft")
-  moveQB(-2,0);
-
- if(e.key.toLowerCase()==="d"||e.key==="ArrowRight")
-  moveQB(2,0);
+if(k==='w'||e.key==='ArrowUp')move(0,-2);
+if(k==='s'||e.key==='ArrowDown')move(0,2);
+if(k==='a'||e.key==='ArrowLeft')move(-2,0);
+if(k==='d'||e.key==='ArrowRight')move(2,0)
 });
 </script>
 </body>
