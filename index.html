@@ -1,921 +1,329 @@
+
+BAILEY TEETER <605257@buchananschools.com>
+2:45 AM (0 minutes ago)
+to me
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gridiron Football 3D</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gridiron Coach</title>
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #07111f;
-  color: white;
-  font-family: Arial, sans-serif;
-}
-
-header {
-  padding: 18px;
-  background: #102238;
-  border-bottom: 2px solid #facc15;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-button, select {
-  padding: 11px 15px;
-  border: 0;
-  border-radius: 9px;
-  background: #facc15;
-  color: #111;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #fde047;
-}
-
-.secondary {
-  background: #30465f;
-  color: white;
-}
-
-main {
-  max-width: 1200px;
-  margin: auto;
-  padding: 15px;
-}
-
-.panel {
-  background: #102238;
-  border: 1px solid #34516e;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 15px;
-}
-
-.hidden {
-  display: none;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 10px;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 14px;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.stat {
-  background: #071522;
-  border-radius: 9px;
-  padding: 10px;
-  text-align: center;
-  font-size: 12px;
-}
-
-.stat b {
-  display: block;
-  color: #facc15;
-  font-size: 21px;
-  margin-top: 5px;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-#world {
-  height: 550px;
-  position: relative;
-  overflow: hidden;
-  border: 5px solid white;
-  border-radius: 12px;
-  background: #237b45;
-}
-
-#field {
-  position: absolute;
-  inset: -15%;
-  transform: perspective(850px) rotateX(53deg) scale(1.12);
-  background: repeating-linear-gradient(
-    90deg,
-    #1c7140 0 9.09%,
-    #25864b 9.09% 18.18%
-  );
-  border: 5px solid white;
-}
-
-#field::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 9.6%,
-    #ffffffaa 9.6% 10%
-  );
-  pointer-events: none;
-}
-
-.endzone {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 12%;
-  border: 3px solid white;
-}
-
-.left {
-  left: 0;
-  background: #194b99aa;
-}
-
-.right {
-  right: 0;
-  background: #991b1baa;
-}
-
-.player {
-  position: absolute;
-  width: 27px;
-  height: 27px;
-  border-radius: 50%;
-  border: 3px solid white;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  font-size: 9px;
-  font-weight: bold;
-  z-index: 2;
-  box-shadow: 0 2px 5px #0008;
-}
-
-.offense {
-  background: #2563eb;
-}
-
-.defense {
-  background: #dc2626;
-}
-
-.quarterback {
-  background: #facc15;
-  color: #111;
-}
-
-.ball {
-  background: #8b4513;
-  border-color: #f5d0a0;
-}
-
-#overlay {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 3;
-  background: #071522dd;
-  padding: 11px;
-  border-radius: 9px;
-  font-size: 13px;
-}
-
-#log {
-  height: 120px;
-  overflow: auto;
-  background: #071522;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  margin-top: 12px;
-}
-
-@media (max-width: 700px) {
-  .stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  #world {
-    height: 420px;
-  }
-
-  header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
+body{margin:0;background:#07111f;color:white;font-family:Arial;text-align:center}
+button,select{padding:12px;margin:5px;border-radius:8px;font-weight:bold}
+button{background:#e8bb4b;border:0}
+#field{position:relative;margin:20px auto;background:#18723b;border:5px solid white;width:90%;max-width:1000px;aspect-ratio:16/9;background-image:repeating-linear-gradient(90deg,transparent 0 9%,#ffffff33 9% 10%)}
+.player{position:absolute;width:30px;height:30px;border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold}
+.offense{background:#1680ff}
+.defense{background:#e33}
+.panel{padding:15px;background:#142238;margin:10px;border-radius:12px}
+.hidden{display:none}
 </style>
 </head>
-
 <body>
 
-<header>
-  <strong>🏈 GRIDIRON 3D</strong>
-  <span>Football Career Prototype</span>
-  <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
-</header>
+<div id="menu" class="panel">
+<h1>🏈 GRIDIRON COACH</h1>
 
-<main>
+<select id="home">
+<option>Detroit Lions</option>
+<option>Dallas Cowboys</option>
+<option>Kansas City Chiefs</option>
+<option>Buffalo Bills</option>
+<option>Green Bay Packers</option>
+<option>Philadelphia Eagles</option>
+</select>
 
-<section id="menu" class="panel">
+<select id="away">
+<option>New England Patriots</option>
+<option>San Francisco 49ers</option>
+<option>Miami Dolphins</option>
+<option>Chicago Bears</option>
+<option>New York Giants</option>
+<option>Las Vegas Raiders</option>
+</select>
 
-  <h1>Game Center</h1>
+<br>
 
-  <p>
-    Choose a game mode, team, and weather.
-  </p>
+<select id="weather">
+<option>Clear</option>
+<option>Rain</option>
+<option>Snow</option>
+<option>Windy</option>
+<option>Night</option>
+</select>
 
-  <div class="grid">
-    <button onclick="startGame('Play Now')">
-      Play Now
-    </button>
+<br>
+<button onclick="start()">START GAME</button>
+<button onclick="document.documentElement.requestFullscreen()">FULLSCREEN</button>
+</div>
 
-    <button onclick="startGame('Franchise')">
-      Franchise
-    </button>
+<div id="game" class="hidden">
 
-    <button onclick="startGame('Superstar')">
-      Superstar
-    </button>
+<div class="panel">
+<h2>
+<span id="awayName"></span>
+<span id="awayScore">0</span>
+-
+<span id="homeScore">0</span>
+<span id="homeName"></span>
+</h2>
 
-    <button onclick="startGame('Ultimate Team')">
-      Ultimate Team
-    </button>
-  </div>
+<h3>
+<span id="quarter">Q1</span>
+|
+<span id="clock">5:00</span>
+|
+Down <span id="down">1</span>
+&
+<span id="distance">10</span>
+</h3>
 
-  <div class="controls">
+<p id="status">Press SNAP to begin.</p>
+</div>
 
-    <label>
-      Team:
-      <select id="team">
-        <option>Detroit Lions</option>
-        <option>Dallas Cowboys</option>
-        <option>Green Bay Packers</option>
-        <option>Kansas City Chiefs</option>
-        <option>Buffalo Bills</option>
-        <option>San Francisco 49ers</option>
-        <option>Philadelphia Eagles</option>
-        <option>Miami Dolphins</option>
-      </select>
-    </label>
+<div id="field"></div>
 
-    <label>
-      Weather:
-      <select id="weather">
-        <option>Clear</option>
-        <option>Rain</option>
-        <option>Snow</option>
-        <option>Wind</option>
-        <option>Night</option>
-      </select>
-    </label>
+<div class="panel">
+<button onclick="snap()">SNAP</button>
+<button onclick="pass()">PASS</button>
+<button onclick="run()">RUN</button>
+<button onclick="kick()">KICK</button>
+<button onclick="tackle()">TACKLE</button>
+<button onclick="switchPlayer()">SWITCH PLAYER</button>
+<button onclick="start()">RESTART</button>
+</div>
 
-  </div>
+<div class="panel">
+<p>Controls: WASD / Arrow Keys to move</p>
+<p>Space = Snap | P = Pass | R = Run | K = Kick | T = Tackle | C = Switch</p>
+<div id="log"></div>
+</div>
 
-</section>
-
-<section id="game" class="hidden">
-
-  <section class="panel">
-
-    <div class="row">
-      <h2 id="title">Exhibition</h2>
-
-      <button
-        class="secondary"
-        onclick="backToMenu()">
-        Main Menu
-      </button>
-    </div>
-
-    <div class="stats">
-
-      <div class="stat">
-        HOME
-        <b id="homeScore">0</b>
-      </div>
-
-      <div class="stat">
-        AWAY
-        <b id="awayScore">0</b>
-      </div>
-
-      <div class="stat">
-        QUARTER
-        <b id="quarter">1</b>
-      </div>
-
-      <div class="stat">
-        CLOCK
-        <b id="clock">5:00</b>
-      </div>
-
-      <div class="stat">
-        DOWN
-        <b id="down">1 & 10</b>
-      </div>
-
-    </div>
-
-    <p id="status">
-      Press Snap to begin the play.
-    </p>
-
-  </section>
-
-  <div id="world">
-
-    <div id="field">
-
-      <div class="endzone left"></div>
-      <div class="endzone right"></div>
-
-    </div>
-
-    <div id="overlay">
-
-      Weather:
-      <b id="weatherText">Clear</b>
-
-      <br>
-
-      Crowd:
-      <b id="crowd">65%</b>
-
-    </div>
-
-  </div>
-
-  <section class="panel">
-
-    <div class="row">
-
-      <b>
-        WASD / Arrow keys: Move quarterback
-      </b>
-
-      <span>
-        HOME BALL
-      </span>
-
-    </div>
-
-    <div class="controls">
-
-      <button onclick="snap()">
-        Snap
-      </button>
-
-      <button onclick="runPlay()">
-        Run
-      </button>
-
-      <button onclick="passPlay()">
-        Pass
-      </button>
-
-      <button onclick="kick()">
-        Kick
-      </button>
-
-      <button onclick="changeWeather()">
-        Weather
-      </button>
-
-      <button
-        class="secondary"
-        onclick="resetPlay()">
-        Reset
-      </button>
-
-    </div>
-
-    <div id="log"></div>
-
-  </section>
-
-</section>
-
-</main>
+</div>
 
 <script>
+let state={
+active:false,
+quarter:1,
+clock:300,
+down:1,
+distance:10,
+home:0,
+away:0,
+pos:"home",
+selected:0,
+players:[]
+};
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-let clock = 300;
-let quarter = 1;
-let down = 1;
-let togo = 10;
-let homeScore = 0;
-let awayScore = 0;
-let crowd = 65;
-let weather = "Clear";
-let live = false;
+function start(){
+state={
+active:false,
+quarter:1,
+clock:300,
+down:1,
+distance:10,
+home:0,
+away:0,
+pos:"home",
+selected:0,
+players:[]
+};
 
-let qbX = 20;
-let qbY = 50;
+$("menu").classList.add("hidden");
+$("game").classList.remove("hidden");
 
-function writeLog(message) {
+$("awayName").textContent=$("away").value;
+$("homeName").textContent=$("home").value;
 
-  $("log").innerHTML =
-    "<div>" + message + "</div>" +
-    $("log").innerHTML;
-
+draw();
+update();
+log("Game started. Press SNAP.");
 }
 
-function startGame(mode) {
-
-  weather = $("weather").value;
-
-  $("menu").classList.add("hidden");
-  $("game").classList.remove("hidden");
-
-  $("title").textContent =
-    $("team").value + " — " + mode;
-
-  clock = 300;
-  quarter = 1;
-  down = 1;
-  togo = 10;
-  homeScore = 0;
-  awayScore = 0;
-  crowd = 65;
-  live = false;
-
-  drawPlayers();
-  updateStats();
-
-  writeLog(
-    "Started " + mode +
-    " in " + weather + " weather."
-  );
-
+function log(text){
+$("log").innerHTML="<p>"+text+"</p>"+$("log").innerHTML;
 }
 
-function backToMenu() {
-
-  $("game").classList.add("hidden");
-  $("menu").classList.remove("hidden");
-
+function update(){
+$("homeScore").textContent=state.home;
+$("awayScore").textContent=state.away;
+$("quarter").textContent="Q"+state.quarter;
+$("clock").textContent=Math.floor(state.clock/60)+":"+String(state.clock%60).padStart(2,"0");
+$("down").textContent=state.down;
+$("distance").textContent=state.distance;
 }
 
-function updateStats() {
+function draw(){
+$("field").innerHTML="";
+state.players=[];
 
-  $("homeScore").textContent = homeScore;
-  $("awayScore").textContent = awayScore;
-  $("quarter").textContent = quarter;
+let offense=[
+[30,50,"QB"],[25,40,"C"],[25,47,"G"],[25,53,"G"],
+[25,60,"T"],[15,25,"WR"],[15,75,"WR"],
+[18,40,"TE"],[18,60,"RB"],[8,35,"WR"],[8,65,"WR"]
+];
 
-  $("clock").textContent =
-    Math.floor(clock / 60) + ":" +
-    String(clock % 60).padStart(2, "0");
+let defense=[
+[48,50,"DT"],[50,40,"DT"],[50,60,"DE"],
+[58,30,"LB"],[58,45,"LB"],[58,55,"LB"],[58,70,"LB"],
+[70,20,"CB"],[70,40,"CB"],[70,60,"S"],[70,80,"S"]
+];
 
-  $("down").textContent =
-    down + " & " + togo;
-
-  $("crowd").textContent =
-    crowd + "%";
-
-  $("weatherText").textContent =
-    weather;
-
+offense.forEach((p,i)=>create(p[0],p[1],"offense",p[2],i));
+defense.forEach((p,i)=>create(p[0],p[1],"defense",p[2],i+20));
 }
 
-function createPlayer(x, y, number, type) {
-
-  const player = document.createElement("div");
-
-  player.className =
-    "player " + type;
-
-  player.textContent = number;
-
-  player.style.left = x + "%";
-  player.style.top = y + "%";
-
-  $("field").appendChild(player);
-
+function create(x,y,type,label,index){
+let p=document.createElement("div");
+p.className="player "+type;
+p.textContent=label;
+p.style.left=x+"%";
+p.style.top=y+"%";
+p.dataset.index=index;
+$("field").appendChild(p);
+state.players.push(p);
 }
 
-function drawPlayers() {
-
-  const field = $("field");
-
-  field
-    .querySelectorAll(".player")
-    .forEach(player => player.remove());
-
-  const offense = [
-
-    [20, 50, "QB"],
-    [28, 40, 2],
-    [28, 47, 3],
-    [28, 53, 4],
-    [28, 60, 5],
-    [38, 30, 6],
-    [38, 70, 7],
-    [45, 42, 8],
-    [45, 58, 9],
-    [50, 25, 10],
-    [50, 75, 11]
-
-  ];
-
-  const defense = [
-
-    [65, 25, 1],
-    [65, 75, 2],
-    [70, 35, 3],
-    [70, 65, 4],
-    [73, 45, 5],
-    [73, 55, 6],
-    [80, 30, 7],
-    [80, 70, 8],
-    [84, 42, 9],
-    [84, 58, 10],
-    [88, 50, 11]
-
-  ];
-
-  offense.forEach(player => {
-
-    createPlayer(
-      player[0],
-      player[1],
-      player[2],
-      player[2] === "QB"
-        ? "offense quarterback"
-        : "offense"
-    );
-
-  });
-
-  defense.forEach(player => {
-
-    createPlayer(
-      player[0],
-      player[1],
-      player[2],
-      "defense"
-    );
-
-  });
-
-  createPlayer(
-    qbX,
-    qbY,
-    "🏈",
-    "ball"
-  );
-
+function snap(){
+state.active=true;
+log("SNAP! Play started.");
 }
 
-function moveQuarterback(dx, dy) {
-
-  qbX = Math.max(
-    5,
-    Math.min(95, qbX + dx)
-  );
-
-  qbY = Math.max(
-    8,
-    Math.min(92, qbY + dy)
-  );
-
-  drawPlayers();
-
-  crowd = Math.min(
-    100,
-    crowd + 1
-  );
-
-  updateStats();
-
+function finish(yards,text){
+if(!state.active){
+log("Press SNAP first.");
+return;
 }
 
-function snap() {
+state.active=false;
+state.distance-=yards;
 
-  live = true;
+if(yards>=25){
+if(state.pos==="home")state.home+=7;
+else state.away+=7;
 
-  clock = Math.max(
-    0,
-    clock - 8
-  );
+log("TOUCHDOWN!");
+state.down=1;
+state.distance=10;
+state.pos=state.pos==="home"?"away":"home";
+}
+else if(state.distance<=0){
+log("FIRST DOWN!");
+state.down=1;
+state.distance=10;
+}
+else{
+state.down++;
 
-  $("status").textContent =
-    "Play live! Move the quarterback.";
-
-  writeLog("Snap! The play has started.");
-
-  updateStats();
-
+if(state.down>4){
+log("TURNOVER ON DOWNS!");
+state.down=1;
+state.distance=10;
+state.pos=state.pos==="home"?"away":"home";
+}
+else{
+log(text+" for "+yards+" yards.");
+}
 }
 
-function runPlay() {
-
-  if (!live) {
-    snap();
-  }
-
-  completePlay("Run");
-
+update();
+draw();
 }
 
-function passPlay() {
-
-  if (!live) {
-    snap();
-  }
-
-  completePlay("Pass");
-
+function pass(){
+let yards=Math.floor(Math.random()*35)-10;
+finish(yards,"Pass");
 }
 
-function completePlay(type) {
-
-  let gain =
-    Math.floor(Math.random() * 10) + 1;
-
-  if (weather === "Rain") {
-    gain -= 2;
-  }
-
-  if (weather === "Snow") {
-    gain -= 3;
-  }
-
-  if (
-    weather === "Wind" &&
-    type === "Pass"
-  ) {
-    gain -= 4;
-  }
-
-  gain = Math.max(0, gain);
-
-  clock = Math.max(
-    0,
-    clock - 12
-  );
-
-  togo -= gain;
-
-  if (togo <= 0) {
-
-    down = 1;
-    togo = 10;
-    crowd = Math.min(100, crowd + 8);
-
-    writeLog(
-      type +
-      " gained " +
-      gain +
-      " yards — first down!"
-    );
-
-  } else {
-
-    down++;
-
-    writeLog(
-      type +
-      " gained " +
-      gain +
-      " yards."
-    );
-
-    if (down > 4) {
-
-      down = 1;
-      togo = 10;
-
-      writeLog(
-        "Turnover on downs."
-      );
-
-    }
-
-  }
-
-  if (Math.random() < 0.08) {
-
-    homeScore += 7;
-
-    crowd = Math.min(
-      100,
-      crowd + 15
-    );
-
-    writeLog(
-      "TOUCHDOWN!"
-    );
-
-  }
-
-  if (clock === 0) {
-
-    quarter++;
-    clock = 300;
-
-    writeLog(
-      "Quarter ended."
-    );
-
-  }
-
-  $("status").textContent =
-    type + " play finished.";
-
-  updateStats();
-
+function run(){
+let yards=Math.floor(Math.random()*18)-4;
+finish(yards,"Run");
 }
 
-function kick() {
-
-  clock = Math.max(
-    0,
-    clock - 10
-  );
-
-  if (Math.random() < 0.7) {
-
-    homeScore += 3;
-
-    writeLog(
-      "Field goal good!"
-    );
-
-  } else {
-
-    writeLog(
-      "Field goal missed."
-    );
-
-  }
-
-  updateStats();
-
+function tackle(){
+let yards=-Math.floor(Math.random()*6+1);
+finish(yards,"Tackle");
 }
 
-function resetPlay() {
-
-  live = false;
-
-  qbX = 20;
-  qbY = 50;
-
-  down = 1;
-  togo = 10;
-
-  drawPlayers();
-  updateStats();
-
-  writeLog(
-    "Play reset."
-  );
-
+function kick(){
+if(!state.active){
+log("Press SNAP first.");
+return;
 }
 
-function changeWeather() {
+state.active=false;
 
-  const conditions = [
-    "Clear",
-    "Rain",
-    "Snow",
-    "Wind",
-    "Night"
-  ];
-
-  const index =
-    conditions.indexOf(weather);
-
-  weather =
-    conditions[
-      (index + 1) % conditions.length
-    ];
-
-  if (weather === "Night") {
-
-    $("world").style.filter =
-      "brightness(0.55)";
-
-  } else if (weather === "Rain") {
-
-    $("world").style.filter =
-      "saturate(0.8)";
-
-  } else if (weather === "Snow") {
-
-    $("world").style.filter =
-      "brightness(1.2)";
-
-  } else {
-
-    $("world").style.filter =
-      "none";
-
-  }
-
-  writeLog(
-    "Weather changed to " +
-    weather + "."
-  );
-
-  updateStats();
-
+if(Math.random()>.25){
+if(state.pos==="home")state.home+=3;
+else state.away+=3;
+log("FIELD GOAL GOOD!");
+}
+else{
+log("FIELD GOAL MISSED!");
 }
 
-function toggleFullscreen() {
+state.down=1;
+state.distance=10;
+state.pos=state.pos==="home"?"away":"home";
 
-  if (!document.fullscreenElement) {
-
-    document.documentElement
-      .requestFullscreen?.();
-
-  } else {
-
-    document.exitFullscreen?.();
-
-  }
-
+update();
+draw();
 }
 
-document.addEventListener(
-  "keydown",
-  event => {
+function switchPlayer(){
+state.selected=(state.selected+1)%11;
+log("Switched player.");
+}
 
-    const key =
-      event.key.toLowerCase();
+document.addEventListener("keydown",e=>{
+if(!$("game").classList.contains("hidden")){
+if(e.code==="Space")snap();
+if(e.key.toLowerCase()==="p")pass();
+if(e.key.toLowerCase()==="r")run();
+if(e.key.toLowerCase()==="k")kick();
+if(e.key.toLowerCase()==="t")tackle();
+if(e.key.toLowerCase()==="c")switchPlayer();
 
-    if (
-      key === "w" ||
-      event.key === "ArrowUp"
-    ) {
+let p=state.players[state.selected];
+if(!p)return;
 
-      moveQuarterback(0, -3);
+let x=parseFloat(p.style.left);
+let y=parseFloat(p.style.top);
 
-    }
+if(e.key==="ArrowUp"||e.key.toLowerCase()==="w")y-=2;
+if(e.key==="ArrowDown"||e.key.toLowerCase()==="s")y+=2;
+if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")x-=2;
+if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")x+=2;
 
-    if (
-      key === "s" ||
-      event.key === "ArrowDown"
-    ) {
+p.style.left=x+"%";
+p.style.top=y+"%";
+}
+});
 
-      moveQuarterback(0, 3);
+setInterval(()=>{
+if(state.active){
+state.clock--;
 
-    }
+if(state.clock<=0){
+if(state.quarter<4){
+state.quarter++;
+state.clock=300;
+log("END OF QUARTER");
+}
+else{
+state.active=false;
+log("GAME OVER!");
+}
+}
 
-    if (
-      key === "a" ||
-      event.key === "ArrowLeft"
-    ) {
-
-      moveQuarterback(-3, 0);
-
-    }
-
-    if (
-      key === "d" ||
-      event.key === "ArrowRight"
-    ) {
-
-      moveQuarterback(3, 0);
-
-    }
-
-    if (event.code === "Space") {
-
-      event.preventDefault();
-      snap();
-
-    }
-
-  }
-);
-
+update();
+}
+},1000);
 </script>
 
 </body>
 </html>
-
