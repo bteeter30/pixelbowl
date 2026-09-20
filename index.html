@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Gridiron</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #101820;
+  color: white;
+  font-family: monospace;
+  image-rendering: pixelated;
+}
+
+#game {
+  max-width: 900px;
+  margin: auto;
+  padding: 12px;
+}
+
+.panel {
+  background: #1c2b36;
+  border: 4px solid #f5d76e;
+  box-shadow: 6px 6px #071016;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+h1, h2 {
+  color: #f5d76e;
+  text-shadow: 3px 3px #000;
+}
+
+button, select {
+  font: inherit;
+  background: #f5d76e;
+  border: 3px solid #111;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #fff09c;
+}
+
+#score {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  gap: 8px;
+}
+
+.team {
+  flex: 1;
+}
+
+.big {
+  font-size: 30px;
+}
+
+#field {
+  position: relative;
+  height: 360px;
+  background: repeating-linear-gradient(
+    90deg,
+    #287b43 0 45px,
+    #2f8b4b 45px 90px
+  );
+  border: 5px solid white;
+  overflow: hidden;
+}
+
+.line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ffffff66;
+}
+
+.player {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #f5d76e;
+  border: 3px solid #111;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.defender {
+  background: #e45b5b;
+}
+
+.ball {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #8b4a20;
+  border: 2px solid #111;
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.hidden {
+  display: none;
+}
+
+#message {
+  min-height: 32px;
+  color: #f5d76e;
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.statgrid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(140px, 1fr)
+  );
+  gap: 8px;
+}
+
+.stat {
+  background: #0f1b23;
+  padding: 10px;
+  border: 2px solid #526773;
+}
+
+small {
+  color: #b7c8cf;
+}
+
+@media (max-width: 600px) {
+  #field {
+    height: 280px;
+  }
+
+  .big {
+    font-size: 24px;
+  }
+
+  button {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+  <div class="panel">
+    <h1>🏈 PIXEL GRIDIRON</h1>
+
+    <div id="score">
+      <div class="team">
+        HOME
+        <div class="big" id="homeScore">0</div>
+      </div>
+
+      <div>
+        Q<span id="quarter">1</span><br>
+        <span id="clock">2:00</span>
+      </div>
+
+      <div class="team">
+        AWAY
+        <div class="big" id="awayScore">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Match</h2>
+
+    <div id="field">
+
+      <div class="line" style="left:10%"></div>
+      <div class="line" style="left:20%"></div>
+      <div class="line" style="left:30%"></div>
+      <div class="line" style="left:40%"></div>
+      <div class="line" style="left:50%"></div>
+      <div class="line" style="left:60%"></div>
+      <div class="line" style="left:70%"></div>
+      <div class="line" style="left:80%"></div>
+      <div class="line" style="left:90%"></div>
+
+      <div id="players"></div>
+
+      <div id="ball" class="ball hidden"></div>
+
+    </div>
+
+    <div id="message">
+      Choose a receiver, then throw the ball.
+    </div>
+
+    <div class="controls">
+
+      <button onclick="selectReceiver(0)">
+        Receiver 1
+      </button>
+
+      <button onclick="selectReceiver(1)">
+        Receiver 2
+      </button>
+
+      <button onclick="selectReceiver(2)">
+        Receiver 3
+      </button>
+
+      <button onclick="throwBall()">
+        THROW
+      </button>
+
+      <button onclick="runPlay()">
+        RUN PLAY
+      </button>
+
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <h2>Team Office</h2>
+
+    <div class="statgrid">
+
+      <div class="stat">
+        Coins: <b id="coins">100</b>
+      </div>
+
+      <div class="stat">
+        Record: <b id="record">0-0</b>
+      </div>
+
+      <div class="stat">
+        Fans: <b id="fans">100</b>
+      </div>
+
+      <div class="stat">
+        Morale: <b id="morale">75</b>
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="controls">
+
+      <button onclick="upgrade('offense')">
+        Upgrade Offense (50)
+      </button>
+
+      <button onclick="upgrade('defense')">
+        Upgrade Defense (50)
+      </button>
+
+      <button onclick="newGame()">
+        New Game
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>Roster</h2>
+
+    <div class="statgrid">
+
+      <div class="stat">
+        QB ★★★☆☆<br>
+        <small>Passing</small>
+      </div>
+
+      <div class="stat">
+        WR ★★★★☆<br>
+        <small>Speed</small>
+      </div>
+
+      <div class="stat">
+        RB ★★★☆☆<br>
+        <small>Running</small>
+      </div>
+
+      <div class="stat">
+        DEF ★★★☆☆<br>
+        <small>Stops</small>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let state = {
+  home: 0,
+  away: 0,
+  q: 1,
+  seconds: 120,
+  coins: 100,
+  wins: 0,
+  losses: 0,
+  fans: 100,
+  morale: 75,
+  offense: 1,
+  defense: 1,
+  selected: 0,
+  play: false
+};
+
+let receivers = [
+  {x: 35, y: 55},
+  {x: 50, y: 35},
+  {x: 65, y: 65}
+];
+
+let defenders = [
+  {x: 43, y: 45},
+  {x: 58, y: 58},
+  {x: 73, y: 40},
+  {x: 82, y: 65}
+];
+
+const $ = id => document.getElementById(id);
+
+function render() {
+
+  $('homeScore').textContent = state.home;
+  $('awayScore').textContent = state.away;
+
+  $('quarter').textContent = state.q;
+
+  $('clock').textContent =
+    Math.floor(state.seconds / 60) + ':' +
+    String(state.seconds % 60).padStart(2, '0');
+
+  $('coins').textContent = state.coins;
+
+  $('record').textContent =
+    state.wins + '-' + state.losses;
+
+  $('fans').textContent = state.fans;
+
+  $('morale').textContent = state.morale;
+
+  let html = '';
+
+  receivers.forEach(p => {
+
+    html += `
+      <div class="player"
+      style="left:${p.x}%;top:${p.y}%">
+      </div>
+    `;
+
+  });
+
+  defenders.forEach(p => {
+
+    html += `
+      <div class="player defender"
+      style="left:${p.x}%;top:${p.y}%">
+      </div>
+    `;
+
+  });
+
+  html += `
+    <div class="player"
+    style="left:18%;top:50%;background:#fff">
+    </div>
+  `;
+
+  $('players').innerHTML = html;
+
+}
+
+function msg(text) {
+  $('message').textContent = text;
+}
+
+function selectReceiver(index) {
+
+  state.selected = index;
+
+  msg(
+    'Receiver ' + (index + 1) +
+    ' selected. Press THROW.'
+  );
+
+}
+
+function tick() {
+
+  state.seconds -= Math.floor(Math.random() * 8) + 4;
+
+  if (state.seconds <= 0) {
+
+    if (state.q < 4) {
+
+      state.q++;
+      state.seconds = 120;
+
+      msg('Quarter ended!');
+
+    } else {
+
+      finishGame();
+
+    }
+
+  }
+
+}
+
+function throwBall() {
+
+  if (state.play) return;
+
+  state.play = true;
+
+  let receiver = receivers[state.selected];
+
+  let chance =
+    Math.random() +
+    (state.offense * 0.05) -
+    (Math.abs(receiver.x - 60) / 200);
+
+  let ball = $('ball');
+
+  ball.classList.remove('hidden');
+
+  ball.style.left = '18%';
+  ball.style.top = '50%';
+
+  setTimeout(() => {
+
+    ball.style.left = receiver.x + '%';
+    ball.style.top = receiver.y + '%';
+
+  }, 150);
+
+  setTimeout(() => {
+
+    ball.classList.add('hidden');
+
+    if (chance > 0.42) {
+
+      state.home += 7;
+      state.coins += 20;
+      state.fans += 5;
+      state.morale =
+        Math.min(100, state.morale + 2);
+
+      msg('TOUCHDOWN! Great pass!');
+
+    } else {
+
+      state.coins =
+        Math.max(0, state.coins - 5);
+
+      state.morale =
+        Math.max(0, state.morale - 3);
+
+      msg('Incomplete pass!');
+
+    }
+
+    tick();
+
+    state.play = false;
+
+    render();
+
+  }, 500);
+
+}
+
+function runPlay() {
+
+  if (state.play) return;
+
+  state.play = true;
+
+  let gain =
+    Math.floor(Math.random() * 12) +
+    2 +
+    state.offense;
+
+  if (Math.random() < 0.18) {
+
+    msg('Fumble! Defense recovered.');
+
+    state.morale -= 4;
+
+  } else if (gain >= 10) {
+
+    state.home += 7;
+    state.coins += 15;
+
+    msg('Big run! TOUCHDOWN!');
+
+  } else {
+
+    msg('Run gained ' + gain + ' yards.');
+
+  }
+
+  tick();
+
+  state.play = false;
+
+  render();
+
+}
+
+function finishGame() {
+
+  let won = state.home >= state.away;
+
+  if (won) {
+
+    state.wins++;
+    state.coins += 50;
+
+    msg('Game over — victory! +50 coins.');
+
+  } else {
+
+    state.losses++;
+
+    msg('Game over — regroup for next week.');
+
+  }
+
+  state.q = 1;
+  state.seconds = 120;
+  state.home = 0;
+
+  state.away =
+    Math.floor(Math.random() * 15);
+
+  render();
+
+}
+
+function upgrade(type) {
+
+  if (state.coins < 50) {
+
+    msg('Not enough coins!');
+
+    return;
+
+  }
+
+  state.coins -= 50;
+
+  state[type]++;
+
+  msg(type.toUpperCase() + ' upgraded!');
+
+  render();
+
+}
+
+function newGame() {
+
+  state.home = 0;
+  state.away = 0;
+  state.q = 1;
+  state.seconds = 120;
+
+  msg('New game started!');
+
+  render();
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
